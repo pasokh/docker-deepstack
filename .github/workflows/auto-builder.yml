@@ -5,9 +5,12 @@ name: Auto Builder CI
 on:
   workflow_dispatch:
   repository_dispatch:
+  release:
+    types:
+      - released
 
 jobs:
-  ubuntu-latest:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
