@@ -1,14 +1,18 @@
-FROM alpine:edge as builder
+FROM vcxpz/baseimage-ubuntu:latest as builder
 
 ARG VERSION="2022.01.1"
 
 RUN set -xe && \
-	apk add curl && \
+	echo "**** install build packages ****" && \
+	apt-get update && \
+	apt-get install --no-install-recommends -y \
+		build-essential \
+		unzip && \
 	mkdir -p \
 		/out/app/sharedfiles \
-		/tmp/sharedfiles \
 		/tmp/deepstack \
-		/out/usr/local && \
+		/out/deeptemp \
+		/out/datastore && \
 	echo "**** download deepstack ****" && \
 	curl -o \
 		/tmp/deepstack.tar.gz -L \
@@ -23,17 +27,21 @@ RUN set -xe && \
 	unzip \
 		/tmp/sharedfiles.zip -d \
 		/out/app/sharedfiles && \
+	echo "**** move files into place ****" && \
+	mv -t /out/app/ \
+		/tmp/deepstack/intelligencelayer \
+		/tmp/deepstack/server \
+		/tmp/deepstack/init.py && \
 	echo "**** download go ****" && \
 	curl -o \
 		/tmp/go1.17.6.linux-amd64.tar.gz -L \
 		"https://go.dev/dl/go1.17.6.linux-amd64.tar.gz" && \
 	tar xf \
 		/tmp/go1.17.6.linux-amd64.tar.gz -C \
-		/out/usr/local && \
-	echo "**** move files into place ****" && \
-	mv /tmp/deepstack/intelligencelayer /out/app/ && \
-	mv /tmp/deepstack/server /out/app/ && \
-	mv /tmp/deepstack/init.py /out/app/ && \
+		/usr/local && \
+	echo "**** build deepstack server ****" && \
+	cd /out/app/server && \
+	/usr/local/go/bin/go build && \
 	echo "**** cleanup ****" && \
 	rm -rf \
 		/out/app/sharedfiles/face_lite.pt \
@@ -69,9 +77,7 @@ RUN set -xe && \
 	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
 	apt-get update && \
 	apt-get install --no-install-recommends -y \
-		build-essential \
 		ffmpeg \
-		gcc \
 		libglib2.0-0 \
 		libsm6 \
 		libxext6 \
@@ -98,18 +104,12 @@ RUN set -xe && \
 		torch==1.10.1+cpu \
 		torchvision==0.11.2+cpu \
 		tqdm && \
-	echo "**** build deepstack server ****" && \
-	mkdir -p \
-		/deeptemp \
-		/datastore && \
-	cd /app/server && \
-	/usr/local/go/bin/go build && \
 	echo "**** cleanup ****" && \
-	apt-get remove -y --purge \
-		build-essential \
-		gcc && \
 	apt-get autoremove -y && \
 	apt-get clean && \
+	for cleanfiles in *.pyc *.pyo; do \
+  		find /usr/local/lib/python3.*  -iname "${cleanfiles}" -exec rm -f '{}' + ; \
+	done && \
 	rm -rf \
 		/tmp/* \
 		/usr/local/go \
