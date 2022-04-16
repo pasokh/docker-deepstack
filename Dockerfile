@@ -1,140 +1,120 @@
-FROM deepquestai/deepstack:cpu as builder
+FROM alpine:edge as builder
+
+ARG VERSION="2022.01.1"
+
+RUN set -xe && \
+	apk add curl && \
+	mkdir -p \
+		/out/app/sharedfiles \
+		/tmp/sharedfiles \
+		/tmp/deepstack \
+		/out/usr/local && \
+	echo "**** download deepstack ****" && \
+	curl -o \
+		/tmp/deepstack.tar.gz -L \
+		"https://github.com/johnolafenwa/DeepStack/archive/${VERSION}.tar.gz" && \
+	tar xf \
+		/tmp/deepstack.tar.gz -C \
+		/tmp/deepstack --strip-components=1 && \
+	echo "**** download deepstack dependencies ****" && \
+	curl -o \
+		/tmp/sharedfiles.zip -L \
+		"https://deepquest.sfo2.digitaloceanspaces.com/deepstack/shared-files/sharedfiles.zip" && \
+	unzip \
+		/tmp/sharedfiles.zip -d \
+		/out/app/sharedfiles && \
+	curl -o \
+		/tmp/go1.17.6.linux-amd64.tar.gz -L \
+		"https://go.dev/dl/go1.17.6.linux-amd64.tar.gz" && \
+	tar xf \
+		/tmp/go1.17.6.linux-amd64.tar.gz -C \
+		/out/usr/local && \
+	echo "**** move files into place ****" && \
+	mv /tmp/deepstack/intelligencelayer /out/app/ && \
+	mv /tmp/deepstack/server /out/app/ && \
+	mv /tmp/deepstack/init.py /out/app/ && \
+	rm -rf \
+		/out/app/sharedfiles/face_lite.pt \
+		/out/app/sharedfiles/scene.model \
+		/out/app/sharedfiles/yolov5s.pt
+	
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# runtime stage
 
 FROM vcxpz/baseimage-ubuntu:latest
 
-ENV SLEEP_TIME="0.01" \
-	CUDA_MODE="False" \
-	APPDIR="/app/deepstack" \
-	DATA_DIR="/config/" \
-	TEMP_PATH="/deeptemp/" \
-	PROFILE="desktop_cpu" \
-	PYTHON_VERSION="3.7.9"
+ARG VERSION="2022.01.1"
 
-RUN set -ex && \
+ENV DEBIAN_FRONTEND="noninteractive" \
+	PIPFLAGS="--no-cache-dir --find-links https://download.pytorch.org/whl/cpu/torch_stable.html" \
+	SLEEP_TIME="0.01" \
+	TIMEOUT="60" \
+	SEND_LOGS="True" \
+	CUDA_MODE="False" \
+	APPDIR="/config" \
+	DATA_DIR="/datastore" \
+	TEMP_PATH="/deeptemp/" \
+	PROFILE="desktop_cpu"
+
+COPY --from=builder out/ /
+
+	RUN set -xe && \
+	echo "**** install runtime packages ****" && \
+	echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu focal main" >>/etc/apt/sources.list && \
+	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
 	apt-get update && \
-	echo "**** install packages ****" && \
-	apt-get install -y --no-install-recommends \
-		autoconf \
-		automake \
-		bzip2 \
-		ca-certificates \
-		curl \
-		default-libmysqlclient-dev \
-		dpkg-dev \
-		ffmpeg \
-		file \
-		g++ \
-		gcc \
-		unzip \
-		git \
-		imagemagick \
-		libbluetooth-dev \
-		libbz2-dev \
-		libc6-dev \
-		libcurl4-openssl-dev \
-		libdb-dev \
-		libevent-dev \
-		libffi-dev \
-		libgdbm-dev \
-		libglib2.0-0 \
-		libglib2.0-dev \
-		libgmp-dev \
-		libjpeg-dev \
-		libkrb5-dev \
-		liblzma-dev \
-		libmagickcore-dev \
-		libmagickwand-dev \
-		libmaxminddb-dev \
-		libncurses5-dev \
-		libncursesw5-dev \
-		libpng-dev \
-		libpq-dev \
-		libreadline-dev \
+	apt-get install --no-install-recommends -y \
+		python3.7 \
 		libsm6 \
-		libsqlite3-dev \
-		libssl-dev \
-		libtool \
-		libwebp-dev \
 		libxext6 \
-		libxml2-dev \
 		libxrender1 \
-		libxslt-dev \
-		libyaml-dev \
-		make \
-		mercurial \
-		netbase \
-		openssh-client \
-		patch \
-		procps \
-		redis-server \
-		subversion \
-		tk-dev \
-		unzip \
-		uuid-dev \
-		wget \
-		xz-utils \
-		zlib1g-dev && \
-	echo "**** build python ****" && \
-	curl -o \
-		/tmp/python.tar.xz -L \
-		"https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" && \
-	mkdir -p /usr/src/python && \
-	tar xf \
-		/tmp/python.tar.xz -C \
-		/usr/src/python --strip-components=1 && \
-	cd /usr/src/python && \
-	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" && \
-	./configure --build="$gnuArch" --enable-loadable-sqlite-extensions --enable-optimizations --enable-option-checking=fatal --enable-shared --with-system-expat --with-system-ffi --without-ensurepip && \
-	make -j "$(nproc)" PROFILE_TASK='-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode' && \
-	make install && \
-	rm -rf /usr/src/python && \
-	find /usr/local -depth \( \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) -o \( -type f -a -name 'wininst-*.exe' \) \) -exec rm -rf '{}' + && \
-	ldconfig && \
-	python3 --version && \
-	echo "**** set python symlinks ****" && \
-	cd /usr/local/bin && \
-	ln -s idle3 idle && \
-	ln -s pydoc3 pydoc && \
-	ln -s python3 python && \
-	ln -s python3-config python-config && \
-	echo "**** install pip ****" && \
-	curl -o \
-		/tmp/get-pip.py -L \
-		"https://bootstrap.pypa.io/get-pip.py" && \
-	python /tmp/get-pip.py --disable-pip-version-check --no-cache-dir && \
-	pip --version && \
-	find /usr/local -depth \( \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \) -exec rm -rf '{}' + && \
-	echo "**** install pip packages ****" && \
-	pip3 install --upgrade \
-		setuptools \
-		pip && \
-	pip install \
-		torch==1.6.0+cpu \
-		torchvision==0.7.0+cpu -f \
-		https://download.pytorch.org/whl/torch_stable.html && \
-	pip3 install --upgrade \
-		Cython \
-		Matplotlib \
-		PyYAML \
+		libglib2.0-0 \
+		ffmpeg \
+		redis-server && \
+	curl https://bootstrap.pypa.io/get-pip.py | python3.7
+
+RUN set -xe && \
+	pip install --no-cache-dir --upgrade \
+		pip \
+		setuptools && \
+	pip install ${PIPFLAGS} \
+		torch==1.10.1+cpu \
+		torchvision==0.11.2+cpu \
 		onnxruntime==0.4.0 \
-		opencv-python \
-		pillow \
 		redis \
+		opencv-python \
+		Cython \
+		pillow \
 		scipy \
+		tqdm \
 		tensorboard \
-		tqdm && \
+		PyYAML \
+		Matplotlib \
+		easydict \
+		future \
+		numpy
+
+RUN set -xe && \
+	mkdir -p \
+		/deeptemp \
+		/datastore && \
+	cd /app/server && \
+	apt-get install -y gcc build-essential && \
+	/usr/local/go/bin/go build && \
 	echo "**** cleanup ****" && \
+	apt-get remove -y --purge \
+		gcc build-essential && \
 	apt-get autoremove -y && \
 	apt-get clean && \
 	rm -rf \
 		/tmp/* \
+		/usr/local/go \
 		/var/lib/apt/lists/* \
 		/var/tmp/*
 
-COPY --from=builder /app /app/deepstack
-
 # copy local files
-COPY root/* /
+COPY root/ /
 
 # ports and volumes
 EXPOSE 5000
