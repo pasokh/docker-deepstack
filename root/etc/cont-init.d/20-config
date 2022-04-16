@@ -3,4 +3,9 @@
 # permissions
 chown -R abc:abc \
 	/app \
-	/config
+	/config \
+	/deeptemp \
+	/datastore
+
+[[ -d /modelstore ]] &&
+	chown -R abc:abc /modelstore
