@@ -329,5 +329,4 @@ ucf3.0038+nmu1
 util-linux2.34-0.1ubuntu9.3
 x11-common1:7.7+19ubuntu14
 xkb-data2.29-2
-xz-utils5.2.4-1ubuntu1.1
 zlib1g1:1.2.11.dfsg-2ubuntu1.2
