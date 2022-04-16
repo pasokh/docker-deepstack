@@ -64,8 +64,8 @@ ENV PIPFLAGS="--no-cache-dir --find-links https://download.pytorch.org/whl/cpu/t
 	TIMEOUT="60" \
 	SEND_LOGS="True" \
 	CUDA_MODE="False" \
-	APPDIR="/config" \
-	DATA_DIR="/datastore" \
+	APPDIR="/app" \
+	DATA_DIR="/config" \
 	TEMP_PATH="/deeptemp/" \
 	PROFILE="desktop_cpu"
 
@@ -104,6 +104,8 @@ RUN set -xe && \
 		torch==1.10.1+cpu \
 		torchvision==0.11.2+cpu \
 		tqdm && \
+	echo "**** configure python ****" && \
+	ln -s /usr/bin/python3.7 /usr/bin/python3 && \
 	echo "**** cleanup ****" && \
 	apt-get autoremove -y && \
 	apt-get clean && \
