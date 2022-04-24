@@ -153,7 +153,6 @@ liblz4-11.9.2-2ubuntu0.20.04.1
 liblzma55.2.4-1ubuntu1
 libmount12.34-0.1ubuntu9.3
 libmp3lame03.100-3
-libmpdec22.4.2-3
 libmpg123-01.25.13-1
 libmysofa11.0~dfsg0-1
 libncurses66.2-0ubuntu2
@@ -187,8 +186,8 @@ libpostproc557:4.2.4-1ubuntu0.1
 libprocps82:3.3.16-1ubuntu2.3
 libpsl50.21.0-1ubuntu1
 libpulse01:13.99.1-1ubuntu3.13
-libpython3.7-minimal3.7.13-1+focal1
-libpython3.7-stdlib3.7.13-1+focal1
+libpython3.7-minimal3.7.13-1+focal3
+libpython3.7-stdlib3.7.13-1+focal3
 libraw1394-112.1.2-1
 libreadline88.0-4
 libroken18-heimdal7.7.0+dfsg-1ubuntu1
@@ -311,10 +310,10 @@ perl-base5.30.0-9ubuntu0.2
 pinentry-curses1.1.0-3build1
 procps2:3.3.16-1ubuntu2.3
 publicsuffix20200303.0012-1
-python3.73.7.13-1+focal1
-python3.7-distutils3.7.13-1+focal1
-python3.7-lib2to33.7.13-1+focal1
-python3.7-minimal3.7.13-1+focal1
+python3.73.7.13-1+focal3
+python3.7-distutils3.7.13-1+focal3
+python3.7-lib2to33.7.13-1+focal3
+python3.7-minimal3.7.13-1+focal3
 readline-common8.0-4
 redis-server5:5.0.7-2ubuntu0.1
 redis-tools5:5.0.7-2ubuntu0.1

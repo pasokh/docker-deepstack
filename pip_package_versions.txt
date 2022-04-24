@@ -7,9 +7,9 @@ cycler==0.11.0
 Cython==0.29.28
 Deprecated==1.2.13
 easydict==1.9
-fonttools==4.32.0
+fonttools==4.33.2
 future==0.18.2
-google-auth==2.6.5
+google-auth==2.6.6
 google-auth-oauthlib==0.4.6
 grpcio==1.44.0
 idna==3.3
@@ -23,7 +23,7 @@ onnxruntime==0.4.0
 opencv-python==4.5.5.64
 packaging==21.3
 Pillow==9.1.0
-protobuf==3.20.0
+protobuf==3.20.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pyparsing==3.0.8
@@ -41,7 +41,7 @@ tensorboard-plugin-wit==1.8.1
 torch==1.10.1+cpu
 torchvision==0.11.2+cpu
 tqdm==4.64.0
-typing_extensions==4.1.1
+typing_extensions==4.2.0
 urllib3==1.26.9
 Werkzeug==2.1.1
 wrapt==1.14.0
