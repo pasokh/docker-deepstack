@@ -83,6 +83,7 @@ RUN set -xe && \
 		libxext6 \
 		libxrender1 \
 		python3.7 \
+		python3.7-distutils \
 		redis-server && \
 	curl https://bootstrap.pypa.io/get-pip.py | python3.7 && \
 	pip install --no-cache-dir --upgrade \
