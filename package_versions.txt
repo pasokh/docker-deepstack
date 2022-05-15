@@ -8,7 +8,7 @@ bsdutils1:2.34-0.1ubuntu9.3
 bzip21.0.8-2
 ca-certificates20210119~20.04.2
 coreutils8.30-3ubuntu2
-curl7.68.0-1ubuntu2.10
+curl7.68.0-1ubuntu2.11
 dash0.5.10.2-6
 debconf1.5.73
 debianutils4.9.1
@@ -78,10 +78,10 @@ libchromaprint11.4.3-3build1
 libcodec2-0.90.9.2-2
 libcom-err21.45.5-2ubuntu1
 libcrypt11:4.4.10-10ubuntu4
-libcurl47.68.0-1ubuntu2.10
+libcurl47.68.0-1ubuntu2.11
 libdatrie10.2.12-3
 libdb5.35.3.28+dfsg1-0.6ubuntu2
-libdbus-1-31.12.16-2ubuntu2.1
+libdbus-1-31.12.16-2ubuntu2.2
 libdc1394-222.2.5-2.1
 libdebconfclient00.251ubuntu1
 libdrm22.4.107-8ubuntu1~20.04.2
@@ -292,7 +292,7 @@ libzmq54.3.2-2ubuntu1
 libzstd11.4.4+dfsg-3ubuntu0.1
 libzvbi00.2.35-17
 libzvbi-common0.2.35-17
-locales2.31-0ubuntu9.7
+locales2.31-0ubuntu9.9
 login1:4.8.1-1ubuntu5.20.04.1
 logsave1.45.5-2ubuntu1
 lsb-base11.1.0ubuntu2
