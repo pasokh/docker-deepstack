@@ -23,7 +23,7 @@ onnxruntime==0.4.0
 opencv-python==4.5.5.64
 packaging==21.3
 Pillow==9.1.1
-protobuf==3.20.1
+protobuf==4.21.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pyparsing==3.0.9
