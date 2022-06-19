@@ -1,7 +1,7 @@
 absl-py==1.1.0
 async-timeout==4.0.2
 cachetools==5.2.0
-certifi==2022.5.18.1
+certifi==2022.6.15
 charset-normalizer==2.0.12
 cycler==0.11.0
 Cython==0.29.30
@@ -9,12 +9,12 @@ Deprecated==1.2.13
 easydict==1.9
 fonttools==4.33.3
 future==0.18.2
-google-auth==2.7.0
+google-auth==2.8.0
 google-auth-oauthlib==0.4.6
 grpcio==1.46.3
 idna==3.3
 importlib-metadata==4.11.4
-kiwisolver==1.4.2
+kiwisolver==1.4.3
 Markdown==3.3.7
 matplotlib==3.5.2
 numpy==1.21.6
