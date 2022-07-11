@@ -5,6 +5,7 @@
 **This is an unofficial image that has been modified for my own needs. If my needs match your needs, feel free to use this image at your own risk.**
 
 Fork of [johnolafenwa/DeepStack](https://github.com/johnolafenwa/DeepStack). (Equivalent to 2022.01.1)
+Magically cleaned up some things to make this image around 64% smaller (compressed) than the original image. Without any comprimises (I have space OCD)
 
 [DeepStack](https://www.deepstack.cc/) is an AI server that empowers every developer in the world to easily build state-of-the-art AI systems both on-premise and in the cloud. The promises of Artificial Intelligence are huge but becoming a machine learning engineer is hard. Build and deploy AI-powered applications with in-built and custom AI APIs, all offline and self-hosted
 
